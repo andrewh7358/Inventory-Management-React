@@ -7,7 +7,7 @@ import { validateForm } from './util'
 
 interface RecordModalProps {
   mode: Mode
-  showModal: boolean
+  open: boolean
   initData: RecordDef
   onSubmit: (record: Omit<RecordDef, 'id'>) => void
   onCancel: () => void
@@ -15,17 +15,21 @@ interface RecordModalProps {
 
 export type Mode = 'Create' | 'Edit'
 
-export const RecordModal = ({ mode, showModal, initData, onSubmit, onCancel }: RecordModalProps) => {
+export const RecordModal = ({ mode, open, initData, onSubmit, onCancel }: RecordModalProps) => {
   const [formData, setFormData] = useState<{ [key: string]: string }>({})
   const { openNotification } = useGlobalContext()
 
   useEffect(() => {
-    if (showModal) {
-      setFormData(initData as unknown as { [key: string]: string })
+    if (open) {
+      if (mode === 'Create') {
+        setFormData({})
+      } else { // 'Edit'
+        setFormData(initData as unknown as { [key: string]: string })
+      }
     }
-  }, [showModal])
+  }, [open])
 
-  const _onSubmit = () => {
+  const handleSubmit = () => {
     try { 
       const record = validateForm(formData, mode)
       onSubmit(record)
@@ -34,35 +38,45 @@ export const RecordModal = ({ mode, showModal, initData, onSubmit, onCancel }: R
     }
   }
 
-  const _onCancel = () => {
-    onCancel()
-  }
-
-  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = event.target
+    console.log(name, value)
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const onEnterDown = (event: KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { key } = event
     if (key === 'Enter') {
-      _onSubmit()
+      handleSubmit()
     }
   }
 
   const fields = formDef.map((column) => {
-    const { title, dataIndex } = column
+    const { title, dataIndex, dataType } = column
+
+    let field
+    if (dataType === 'options') {
+      const blank = [<option key={'undefined'} value={''} />]
+      const options = column.options!.map((option) => <option key={option} value={option}>{option}</option>)
+      field = (
+        <select className='formInput' id={dataIndex} name={dataIndex} value={formData[dataIndex] || ''} onChange={handleChange} onKeyDown={handleKeyDown}>
+          {blank.concat(options)}
+        </select>
+      )
+    } else {
+      field = <input className='formInput' id={dataIndex} name={dataIndex} value={formData[dataIndex] || ''} onChange={handleChange} onKeyDown={handleKeyDown} />
+    }
 
     return (
       <div className='formRow' key={dataIndex}>
         <label className='formLabel' htmlFor={dataIndex}>{`${title}:`}</label>
-        <input className='formInput' id={dataIndex} name={dataIndex} value={formData[dataIndex] || ''} onChange={onChange} onKeyDown={onEnterDown} />
+        {field}
       </div>
     )
   })
 
   return (
-    <Modal title={`${mode} Record`} open={showModal} onOk={_onSubmit} onCancel={_onCancel}>
+    <Modal title={`${mode} Record`} open={open} okText={mode} onOk={handleSubmit} onCancel={onCancel}>
       {fields}
     </Modal>
   )

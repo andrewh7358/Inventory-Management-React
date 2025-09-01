@@ -2,6 +2,7 @@ body {
   font-family: Arial, sans-serif;
   padding: 2rem;
   background-color: lightgray;
+  width: inherit !important;
 }
 
 button {
@@ -20,7 +21,7 @@ button {
   font-size: 32px;
 }
 
-.editButton {
+.actionButton {
   margin-right: 1rem;
 }
 

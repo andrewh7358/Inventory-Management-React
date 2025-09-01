@@ -2,6 +2,7 @@ import { Table } from 'antd'
 import React, { useState } from 'react'
 import { Chart } from './Chart'
 import { ActionsColumn, ColumnDef, columnDef } from './columnDef'
+import { DeleteModal } from './DeleteModal'
 import { useGlobalContext } from './GlobalContext'
 import { initialData } from './initailData'
 import { RecordDef } from './recordDef'
@@ -12,40 +13,33 @@ import { handleWorkflows } from './workflows'
 export const App = () => {
   const [dataStore, setDataStore] = useState(initialData)
   const [mode, setMode] = useState<Mode>('Create')
-  const [showModal, setShowModal] = useState(false)
+  const [showRecordModal, setShowRecrodModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [initData, setInitData] = useState({} as RecordDef)
   const [editId, setEditId] = useState('')
+  const [deleteId, setDeleteId] = useState('')
   const { openNotification } = useGlobalContext()
 
-  const openModal = () => {
-    setShowModal(true)
-  }
-
-  const closeModal = () => {
-    setShowModal(false)
-  }
-
-  const onCreate = () => {
+  const handleCreate = () => {
     setMode('Create')
-    setInitData({} as RecordDef)
-    openModal()
+    setShowRecrodModal(true)
   }
 
-  const onEdit = (id: string) => {
+  const handleEdit = (id: string) => {
     const index = dataStore.findIndex((item) => item.id === id)
     setMode('Edit')
     setInitData(dataStore[index])
     setEditId(id)
-    openModal()
+    setShowRecrodModal(true)
   }
 
   const submitCreate = (record: Omit<RecordDef, 'id'>) => {
     const id = generateId()
     const newRecord = { ...record, id }
-    openNotification('success', `${newRecord.name} created`)
+    openNotification('success', `Record ${newRecord.name} created`)
     handleWorkflows(newRecord, openNotification)
     setDataStore((prev) => prev.concat(newRecord))
-    closeModal()
+    setShowRecrodModal(false)
   }
 
   const submitEdit = (editRecord: Omit<RecordDef, 'id'>) => {
@@ -54,7 +48,7 @@ export const App = () => {
       ...dataStore[index],
       ...editRecord
     }
-    openNotification('success', `${editRecord.name} edited`)
+    openNotification('success', `Record ${editRecord.name} edited`)
     handleWorkflows(newRecord, openNotification)
     setDataStore((prev) => {
       prev[index] = {
@@ -63,12 +57,10 @@ export const App = () => {
       }
       return prev
     })
-    setInitData({} as RecordDef)
-    setEditId('')
-    closeModal()
+    setShowRecrodModal(false)
   }
 
-  const onSubmit = (record: Omit<RecordDef, 'id'>) => {
+  const submitRecord = (record: Omit<RecordDef, 'id'>) => {
     if (mode === 'Create') {
       submitCreate(record)
     } else {
@@ -76,18 +68,24 @@ export const App = () => {
     }
   }
 
-  const onDelete = (id: string) => {
-    const index = dataStore.findIndex((item) => item.id === id)
+  const handleDelete = (id: string) => {
+    setDeleteId(id)
+    setShowDeleteModal(true)
+  }
+
+  const submitDelete = () => {
+    const index = dataStore.findIndex((item) => item.id === deleteId)
     const { name } = dataStore[index]
-    openNotification('success', `${name} deleted`)
+    openNotification('success', `Record ${name} deleted`)
     setDataStore((prev) => prev.slice(0, index).concat(prev.slice(index + 1)))
+    setShowDeleteModal(false)
   }
 
   const actions =  {
     render: (_: any, { id }: RecordDef) => (
       <>
-        <button className='editButton' type='button' onClick={() => onEdit(id)}>Edit</button>
-        <button type='button' onClick={() => onDelete(id)}>Delete</button>
+        <button className='actionButton' type='button' onClick={() => handleEdit(id)}>Edit</button>
+        <button type='button' onClick={() => handleDelete(id)}>Delete</button>
       </>
     )
   }
@@ -97,11 +95,12 @@ export const App = () => {
     <>
       <div className='header'>
         <div className='title'>Inventory</div>
-        <button type='button' onClick={onCreate}>Create</button>
+        <button type='button' onClick={handleCreate}>Create</button>
       </div>
-      <Table className='table' rowClassName='tableRow' dataSource={dataStore} columns={columns} />
+      <Table className='table' rowClassName='tableRow' rowKey={(record) => record.id} dataSource={dataStore} columns={columns} />
       <Chart dataStore={dataStore} />
-      <RecordModal mode={mode} showModal={showModal} initData={initData} onSubmit={onSubmit} onCancel={closeModal} />
+      <RecordModal mode={mode} open={showRecordModal} initData={initData} onSubmit={submitRecord} onCancel={() => setShowRecrodModal(false)} />
+      <DeleteModal open={showDeleteModal} onSubmit={submitDelete} onCancel={() => setShowDeleteModal(false)} />
     </>
   )
 }
