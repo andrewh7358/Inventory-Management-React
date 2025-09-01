@@ -4,7 +4,8 @@ import { RecordDef } from './recordDef'
 export interface ColumnDef {
   title: string
   dataIndex: string
-  dataType: 'text' | 'number'
+  dataType: 'text' | 'number' | 'options'
+  options?: string[]
   required?: boolean
   formField?: boolean
 }
@@ -31,10 +32,16 @@ export const columnDef: ColumnDef[] = [
     dataType: 'number'
   },
   {
-    title: 'Count Delta',
-    dataIndex: 'countDelta',
+    title: 'Delta',
+    dataIndex: 'delta',
     dataType: 'number',
     formField: false
+  },
+  {
+    title: 'Status',
+    dataIndex: 'status',
+    dataType: 'options',
+    options: ['Open', 'Closed']
   }
 ]
 

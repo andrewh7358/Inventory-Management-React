@@ -7,32 +7,37 @@ export const initialData: RecordDef[] = [
     name: `Item ${generateId(8).toUpperCase()}`,
     count: 39,
     expectedCount: 39,
-    countDelta: 0
+    delta: 0,
+    status: 'Closed'
   },
   {
     id: generateId(),
     name: `Item ${generateId(8).toUpperCase()}`,
     count: 49,
     expectedCount: 60,
-    countDelta: -11
+    delta: -11,
+    status: 'Open'
   },
   {
     id: generateId(),
     name: `Item ${generateId(8).toUpperCase()}`,
     count: 20,
     expectedCount: 19,
-    countDelta: 1
+    delta: 1,
+    status: 'Closed'
   },
   {
     id: generateId(),
     name: `Item ${generateId(8).toUpperCase()}`,
     count: 43,
     expectedCount: 43,
-    countDelta: 0
+    delta: 0,
+    status: 'Closed'
   },
   {
     id: generateId(),
     name: `Item ${generateId(8).toUpperCase()}`,
-    expectedCount: 14
+    expectedCount: 14,
+    status: 'Open'
   }
 ]

@@ -3,5 +3,6 @@ export interface RecordDef {
   name: string
   count?: number
   expectedCount?: number
-  countDelta?: number
+  delta?: number
+  status?: string
 }

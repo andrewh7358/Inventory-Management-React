@@ -3,14 +3,14 @@ import { RecordDef } from './recordDef'
 
 export const DELTA_MAX = 5
 
-const calculateCountDelta = (record: Partial<RecordDef>) => {
+const calculateDelta = (record: Partial<RecordDef>) => {
   if (record.count && !record.expectedCount) {
-    record['countDelta'] = undefined
+    record['delta'] = undefined
     return 'Count was provided but Expected Count is missing'
   }
 
   if (!record.count && record.expectedCount) {
-    record['countDelta'] = undefined
+    record['delta'] = undefined
     return 'Expected Count was provided but Count is missing'
   }
 
@@ -18,17 +18,17 @@ const calculateCountDelta = (record: Partial<RecordDef>) => {
     const count = Number(record.count)
     const expectedCount = Number(record.expectedCount)
     const delta = count - expectedCount
-    record['countDelta'] = delta
+    record['delta'] = delta
 
     if (Math.abs(delta) > DELTA_MAX) {
       return 'Count exceeds the acceptable delta'
     }
   } else {
-    record['countDelta'] = undefined
+    record['delta'] = undefined
   }
 }
 
-const workflows = [calculateCountDelta]
+const workflows = [calculateDelta]
 
 export const handleWorkflows = (record: Partial<RecordDef>, openNotification: (type: notificationType, description: string) => void) => {
   for (const workflow of workflows) {

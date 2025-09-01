@@ -21,10 +21,10 @@ export const Chart = ({ dataStore }: ChartProps) => {
   const counts = [0, 0, 0, 0]
 
   dataStore.forEach((record) => {
-    if (record.countDelta === undefined) {
+    if (record.delta === undefined) {
       counts[3] += 1
     } else {
-      const delta = Math.abs(record.countDelta)
+      const delta = Math.abs(record.delta)
 
       if (delta === 0) {
         counts[0] += 1
