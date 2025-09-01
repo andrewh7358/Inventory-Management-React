@@ -1,6 +1,6 @@
 # Inventory Management
 
-Input and visualize simple inventory data utilizing a table and charts. This includes support for custom field validation and basic workflow automation.
+You can input and visualize simple inventory data utilizing a table and charts. This includes support for custom field validation and basic workflow automation.
 
 <img src='./screenshot.png' alt='screenshot' height='600px' />
 
