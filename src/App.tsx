@@ -1,12 +1,13 @@
 import { Table } from 'antd'
 import React, { useState } from 'react'
-import { Chart } from './Chart'
+import { DeltasChart } from './DeltasChart'
 import { ActionsColumn, ColumnDef, columnDef } from './columnDef'
 import { DeleteModal } from './DeleteModal'
 import { useGlobalContext } from './GlobalContext'
 import { initialData } from './initailData'
 import { RecordDef } from './recordDef'
 import { Mode, RecordModal } from './RecordModal'
+import { StatusChart } from './StatusChart'
 import { generateId } from './util'
 import { handleWorkflows } from './workflows'
 
@@ -98,7 +99,10 @@ export const App = () => {
         <button type='button' onClick={handleCreate}>Create</button>
       </div>
       <Table className='table' rowClassName='tableRow' rowKey={(record) => record.id} dataSource={dataStore} columns={columns} />
-      <Chart dataStore={dataStore} />
+      <div className='charts'>
+        <DeltasChart dataStore={dataStore} />
+        <StatusChart dataStore={dataStore} />
+      </div>
       <RecordModal mode={mode} open={showRecordModal} initData={initData} onSubmit={submitRecord} onCancel={() => setShowRecrodModal(false)} />
       <DeleteModal open={showDeleteModal} onSubmit={submitDelete} onCancel={() => setShowDeleteModal(false)} />
     </>

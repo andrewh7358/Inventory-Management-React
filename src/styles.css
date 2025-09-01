@@ -45,3 +45,7 @@ button {
 .formInput {
   flex-grow: 1;
 }
+
+.charts {
+  display: flex;
+}

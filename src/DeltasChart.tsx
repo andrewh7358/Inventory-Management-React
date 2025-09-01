@@ -16,7 +16,7 @@ interface ChartProps {
   dataStore: RecordDef[]
 }
 
-export const Chart = ({ dataStore }: ChartProps) => {
+export const DeltasChart = ({ dataStore }: ChartProps) => {
   const labels = ['Expected Count', 'Within Delta', 'Exceeds Delta', 'Missing Data']
   const counts = [0, 0, 0, 0]
 
@@ -54,7 +54,7 @@ export const Chart = ({ dataStore }: ChartProps) => {
     datasets: [
       {
         data: counts,
-        backgroundColor: ['green', 'yellow', 'red', 'gray']
+        backgroundColor: ['#28a745', '#fd7e14', '#dc3545', '#6c757d']
       }
     ]
   }
