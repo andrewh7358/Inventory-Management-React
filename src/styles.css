@@ -1,0 +1,46 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 2rem;
+  background-color: lightgray;
+}
+
+button {
+  padding: 0.5rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.title {
+  display: flex;
+  align-items: flex-end;
+  font-size: 32px;
+}
+
+.editButton {
+  margin-right: 1rem;
+}
+
+.table {
+  overflow: scroll;
+}
+
+.tableRow {
+  background-color: white;
+}
+
+.formRow {
+  margin-bottom: 8px;
+  display: flex;
+}
+
+.formLabel {
+  margin-right: 4px;
+}
+
+.formInput {
+  flex-grow: 1;
+}
